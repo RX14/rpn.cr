@@ -1,5 +1,3 @@
-require "./rpn/*"
-
 module RPN
   VERSION = "0.1.0"
 
