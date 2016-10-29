@@ -1,26 +1,22 @@
-# rpn
+# rpn.cr
 
 TODO: Write a description here
 
 ## Installation
-
 
 Add this to your application's `shard.yml`:
 
 ```yaml
 dependencies:
   rpn:
-    github: [your-github-name]/rpn
+    github: RX14/rpn.cr
 ```
 
-
 ## Usage
-
 
 ```crystal
 require "rpn"
 ```
-
 
 TODO: Write usage instructions here
 
@@ -30,7 +26,7 @@ TODO: Write development instructions here
 
 ## Contributing
 
-1. Fork it ( https://github.com/[your-github-name]/rpn/fork )
+1. Fork it ( https://github.com/RX14/rpn/fork )
 2. Create your feature branch (git checkout -b my-new-feature)
 3. Commit your changes (git commit -am 'Add some feature')
 4. Push to the branch (git push origin my-new-feature)
@@ -38,4 +34,4 @@ TODO: Write development instructions here
 
 ## Contributors
 
-- [[your-github-name]](https://github.com/[your-github-name]) RX14 - creator, maintainer
+- [RX14](https://github.com/RX14) - creator, maintainer
