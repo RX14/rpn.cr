@@ -1,6 +1,9 @@
 # rpn.cr
 
-TODO: Write a description here
+A RPN parser and executor written in crystal. It can parse RPN from both infix
+and RPN strings, and execute RPN to find a result.
+
+Currently it supports `+` `-` `*` `/` and `^` (exponent) operators.
 
 ## Installation
 
@@ -18,11 +21,39 @@ dependencies:
 require "rpn"
 ```
 
-TODO: Write usage instructions here
+Execute RPN given as an array of numbers and symbols
+
+```cr
+RPN.execute([0.5, 2, :"*", 4 :"+"]) # => 5.0
+```
+
+Parse RPN from a string containing RPN notation
+
+```cr
+RPN.from_string("-.5 2 * 4 +") # => [-0.5, 2.0, :"*", 4.0, :"+"]
+```
+
+Parse RPN from a string containing infix notation
+```cr
+RPN.from_infix("4 + (5 - 3)^4 * 2") # => [4.0, 5.0, 3.0, :"-", 4.0, :"^", 2.0, :"*", :"+"]
+```
+
+There are shortcut methods for executing strings directly.
+```cr
+RPN.execute_string("3 4 +")
+# Same as
+RPN.execute(RPN.from_string("3 4 +"))
+```
+
+```cr
+RPN.execute_infix("3 + 4")
+# Same as
+RPN.execute(RPN.from_infix("3 + 4"))
+```
 
 ## Development
 
-TODO: Write development instructions here
+Hack around, then `crystal spec`.
 
 ## Contributing
 
