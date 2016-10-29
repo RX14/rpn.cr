@@ -46,6 +46,47 @@ module RPN
     stack.push result
   end
 
+  def self.from_string(string)
+    str = string.chars
+    len = str.size
+
+    output = Array(Operator | Operand).new(len)
+
+    i = 0
+    while i < len
+      if '0' <= str[i] <= '9'
+        num = str[i].to_i.to_i
+        while (i + 1 < len) && '0' <= str[i + 1] <= '9'
+          num *= 10
+          num += str[i + 1].to_i
+          i += 1
+        end
+
+        # Number token, push to output stack
+        # puts "push #{num} to output"
+        output << num
+      elsif str[i] == ' '
+        # Skip whitespace by doing nothing
+      else
+        case str[i]
+        when '+'
+          output << :"+"
+        when '-'
+          output << :"-"
+        when '*'
+          output << :"*"
+        when '/'
+          output << :"/"
+        when '^'
+          output << :"^"
+        end
+      end
+      i += 1
+    end
+
+    output
+  end
+
   def self.from_infix(string)
     str = string.chars
     len = str.size

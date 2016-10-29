@@ -15,6 +15,12 @@ describe RPN do
     ]).should eq(15 + (((1 + 4)**3) * 5) - 3)
   end
 
+  it "parses RPN strings" do
+    RPN.from_string("3 4 2 * 1 5 - 2 3^^ / +").should eq([
+      3, 4, 2, :"*", 1, 5, :"-", 2, 3, :"^", :"^", :"/", :"+",
+    ])
+  end
+
   it "parses infix" do
     RPN.from_infix("3 + 4 * 2 / (1 - 5)^2^3").should eq([
       3, 4, 2, :"*", 1, 5, :"-", 2, 3, :"^", :"^", :"/", :"+",
