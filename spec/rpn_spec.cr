@@ -16,14 +16,22 @@ describe RPN do
   end
 
   it "parses RPN strings" do
-    RPN.from_string("3 4 2 * 1 5 - 2 3^^ / +").should eq([
-      3, 4, 2, :"*", 1, 5, :"-", 2, 3, :"^", :"^", :"/", :"+",
+    RPN.from_string("3.4 -44.23e5 2 * 1 5 - 2 3^^ / +").should eq([
+      3.4, -44.23e5, 2, :"*", 1, 5, :"-", 2, 3, :"^", :"^", :"/", :"+",
     ])
+  end
+
+  it "executes RPN strings" do
+    RPN.execute_string("3 4 2 * 1 5 - 2 3^^ / +").should be_close(3.00012207031, 1e-10)
   end
 
   it "parses infix" do
     RPN.from_infix("3 + 4 * 2 / (1 - 5)^2^3").should eq([
       3, 4, 2, :"*", 1, 5, :"-", 2, 3, :"^", :"^", :"/", :"+",
     ])
+  end
+
+  it "executes infix" do
+    RPN.execute_infix("3 + 4 * 2 / (1 - 5)^2^3").should be_close(3.00012207031, 1e-10)
   end
 end

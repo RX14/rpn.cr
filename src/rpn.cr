@@ -4,12 +4,12 @@ module RPN
   alias Operator = Symbol
   alias Operand = Int32 | Int64 | Float32 | Float64
 
-  def self.execute(rpn)
-    stack = Array(Operator | Operand).new
+  def self.execute(rpn) : Float64
+    stack = Array(Float64).new
 
     rpn.each do |item|
       if item.is_a?(Operand)
-        stack.push item
+        stack.push item.to_f64
       else
         case item
         when :"+"
@@ -44,7 +44,7 @@ module RPN
     stack.push result
   end
 
-  def self.from_string(string)
+  def self.from_string(string) : Array(Operator | Operand)
     str = string.chars
     len = str.size
 
@@ -52,13 +52,8 @@ module RPN
 
     i = 0
     while i < len
-      if '0' <= str[i] <= '9'
-        num = str[i].to_i.to_i
-        while (i + 1 < len) && '0' <= str[i + 1] <= '9'
-          num *= 10
-          num += str[i + 1].to_i
-          i += 1
-        end
+      if number_start? str, i
+        num, i = read_number(str, i)
 
         # Number token, push to output stack
         # puts "push #{num} to output"
@@ -85,7 +80,11 @@ module RPN
     output
   end
 
-  def self.from_infix(string)
+  def self.execute_string(string)
+    execute(from_string(string))
+  end
+
+  def self.from_infix(string) : Array(Operator | Operand)
     str = string.chars
     len = str.size
 
@@ -94,13 +93,8 @@ module RPN
 
     i = 0
     while i < len
-      if '0' <= str[i] <= '9'
-        num = str[i].to_i.to_i
-        while (i + 1 < len) && '0' <= str[i + 1] <= '9'
-          num *= 10
-          num += str[i + 1].to_i
-          i += 1
-        end
+      if number_start? str, i
+        num, i = read_number(str, i)
 
         # Number token, push to output stack
         # puts "push #{num} to output"
@@ -195,5 +189,41 @@ module RPN
     end
 
     output
+  end
+
+  def self.execute_infix(string)
+    execute(from_infix(string))
+  end
+
+  private def self.number_start?(str, i)
+    # The number either starts with a number or decimal point
+    '0' <= str[i] <= '9' || str[i] == '.' || # or starts with a '+' or '-', with a number or decimal point afterwards
+
+      ((str[i] == '-' || str[i] == '+') && i + 1 < str.size && ('0' <= str[i + 1] <= '9' || str[i + 1] == '.'))
+  end
+
+  @[AlwaysInline]
+  private def self.read_number(str, i)
+    len = str.size
+
+    start_index = i
+    integer = true
+    while (i < len) && ('0' <= str[i] < '9' || str[i] == '.' || str[i] == '+' || str[i] == '-' || str[i] == 'e')
+      integer = false unless '0' <= str[i] <= '9'
+      i += 1
+    end
+    end_index = i - 1
+
+    if integer
+      num = 0
+      start_index.upto(end_index) do |i|
+        num *= 10
+        num += str[i].to_i
+      end
+    else
+      num = str[start_index, end_index - start_index + 1].join.to_f
+    end
+
+    {num, end_index}
   end
 end
