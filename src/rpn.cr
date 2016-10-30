@@ -194,8 +194,7 @@ module RPN
   private def self.number_start?(str, i)
     # The number either starts with a number or decimal point
     '0' <= str[i] <= '9' || str[i] == '.' || # or starts with a '+' or '-', with a number or decimal point afterwards
-
-      ((str[i] == '-' || str[i] == '+') && i + 1 < str.size && ('0' <= str[i + 1] <= '9' || str[i + 1] == '.'))
+ ((str[i] == '-' || str[i] == '+') && i + 1 < str.size && ('0' <= str[i + 1] <= '9' || str[i + 1] == '.'))
   end
 
   @[AlwaysInline]
