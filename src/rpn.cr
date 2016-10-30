@@ -35,11 +35,7 @@ module RPN
     raise "Not enough values to execute operator" unless stack.size >= 2
 
     rhs = stack.pop
-    raise "Expected operand but was operator" unless rhs.is_a?(Operand)
-
     lhs = stack.pop
-    raise "Expected operand but was operator" unless lhs.is_a?(Operand)
-
     result = yield lhs, rhs
     stack.push result
   end
