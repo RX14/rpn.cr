@@ -209,7 +209,7 @@ module RPN
     end
     end_index = i - 1
 
-    if integer
+    if integer && (end_index - start_index + 1) < 10
       num = 0
       start_index.upto(end_index) do |i|
         num *= 10
