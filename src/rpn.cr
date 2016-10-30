@@ -203,7 +203,7 @@ module RPN
 
     start_index = i
     integer = true
-    while (i < len) && ('0' <= str[i] < '9' || str[i] == '.' || str[i] == '+' || str[i] == '-' || str[i] == 'e')
+    while (i < len) && ('0' <= str[i] <= '9' || str[i] == '.' || str[i] == '+' || str[i] == '-' || str[i] == 'e')
       integer = false unless '0' <= str[i] <= '9'
       i += 1
     end

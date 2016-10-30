@@ -26,6 +26,10 @@ describe RPN do
   end
 
   it "parses infix" do
+    RPN.from_infix("1234567890*2").should eq([
+      1234567890.0, 2.0, :"*",
+    ])
+
     RPN.from_infix("3 + 4 * 2 / (1 - 5)^2^3").should eq([
       3, 4, 2, :"*", 1, 5, :"-", 2, 3, :"^", :"^", :"/", :"+",
     ])
