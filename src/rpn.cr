@@ -38,8 +38,12 @@ module RPN
           two_arg_operator(stack) { |lhs, rhs| lhs * rhs }
         when Operator::Divide
           two_arg_operator(stack) { |lhs, rhs| lhs / rhs }
+        when Operator::Modulo
+          two_arg_operator(stack) { |lhs, rhs| lhs % rhs }
         when Operator::Exponent
           two_arg_operator(stack) { |lhs, rhs| lhs**rhs }
+        else
+          raise "Invalid operator: #{item}"
         end
       end
     end
@@ -60,27 +64,12 @@ module RPN
 
   def self.from_string(string) : Array(Operator | Float64)
     raise "Invalid string: not ascii" unless string.ascii_only?
-    str = string.to_slice
-    len = str.size
 
-    output = Array(Operator | Float64).new(len)
+    lexer = Lexer.new(string.to_slice, infix: false)
+    output = Array(Operator | Float64).new(string.bytesize)
 
-    i = 0
-    while i < len
-      if number_start? str, i
-        num, i = read_number(str, i)
-
-        # Number token, push to output stack
-        # puts "push #{num} to output"
-        output << num
-      elsif str[i] == ' '.ord
-        # Skip whitespace by doing nothing
-      else
-        op = ASCII_OPERATOR_TABLE[str[i]]
-        raise "invalid operator #{str[i].chr}" unless op.valid?
-        output << op
-      end
-      i += 1
+    while lexer.has_next?
+      output << lexer.next
     end
 
     output
@@ -92,36 +81,28 @@ module RPN
 
   def self.from_infix(string) : Array(Operator | Float64)
     raise "Invalid string: not ascii" unless string.ascii_only?
-    str = string.to_slice
-    len = str.size
 
-    stack = Array(Operator).new(len / 2)
-    output = Array(Operator | Float64).new(len)
+    lexer = Lexer.new(string.to_slice, infix: true)
+    stack = Array(Operator).new(string.bytesize / 2)
+    output = Array(Operator | Float64).new(string.bytesize)
 
-    i = 0
-    while i < len
-      if number_start? str, i
-        num, i = read_number(str, i)
-
+    while lexer.has_next?
+      case token = lexer.next
+      when Float64
         # Number token, push to output stack
         # puts "push #{num} to output"
-        output << num
-      elsif str[i] == ' '.ord
-        # Skip whitespace by doing nothing
-      elsif str[i] == '('.ord
+        output << token
+      when Operator::LBrace
         # puts "push '(' to stack"
-        stack.push Operator::LBrace
-      elsif str[i] == ')'.ord
+        stack.push token
+      when Operator::RBrace
         until stack.last == Operator::LBrace
           # puts "push #{stack.last} to output"
           output << stack.pop
         end
         stack.pop
-      else
-        o1 = ASCII_OPERATOR_TABLE[str[i]]
-
-        raise "Unsupported operator" unless o1.valid?
-
+      when Operator
+        o1 = token
         while o2 = stack.last?
           if (o1.left_associative? && o1.precedence <= o2.precedence) ||
              (o1.right_associative? && o1.precedence < o2.precedence)
@@ -134,7 +115,6 @@ module RPN
 
         stack << o1
       end
-      i += 1
     end
 
     until stack.size == 0
@@ -147,39 +127,5 @@ module RPN
 
   def self.execute_infix(string)
     execute(from_infix(string))
-  end
-
-  private def self.number_start?(str, i)
-    # The number either starts with a number or decimal point
-    '0'.ord <= str[i] <= '9'.ord || str[i] == '.'.ord || # or starts with a '+' or '-', with a number or decimal point afterwards
- ((str[i] == '-'.ord || str[i] == '+'.ord) && i + 1 < str.size && ('0'.ord <= str[i + 1] <= '9'.ord || str[i + 1] == '.'.ord))
-  end
-
-  @[AlwaysInline]
-  private def self.read_number(str, i)
-    len = str.size
-
-    start_index = i
-    integer = true
-    while (i < len) &&
-          ('0'.ord <= str[i] <= '9'.ord || str[i] == '.'.ord || str[i] == 'e'.ord ||
-          (i == start_index && (str[i] == '+'.ord || str[i] == '-'.ord)))
-      integer = false unless '0'.ord <= str[i] <= '9'.ord
-      i += 1
-    end
-    end_index = i - 1
-
-    if integer && (end_index - start_index + 1) < 10
-      num = 0
-      start_index.upto(end_index) do |i|
-        num *= 10
-        num += str[i] - '0'.ord
-      end
-      num = num.to_f
-    else
-      num = String.new(str[start_index, end_index - start_index + 1]).to_f
-    end
-
-    {num, end_index}
   end
 end
