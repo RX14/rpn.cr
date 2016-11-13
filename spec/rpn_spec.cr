@@ -24,6 +24,7 @@ describe RPN do
 
   it "parses RPN strings" do
     RPN.from_string("1 2 +").should eq([1.0, 2.0, RPN['+']])
+    RPN.from_string("   1 2 +").should eq([1.0, 2.0, RPN['+']])
     RPN.from_string("1234567890 2 *").should eq([1234567890.0, 2.0, RPN['*']])
     RPN.from_string("14 5 %").should eq([14, 5, RPN['%']])
     RPN.from_string("3.4 -44.23e5 2 * 1 5 - 2 3 ^ ^ / +").should eq([
@@ -37,6 +38,7 @@ describe RPN do
 
   it "parses infix" do
     RPN.from_infix("1+2").should eq([1.0, 2.0, RPN['+']])
+    RPN.from_infix("   1+2").should eq([1.0, 2.0, RPN['+']])
     RPN.from_infix("1234567890*2").should eq([1234567890.0, 2.0, RPN['*']])
     RPN.from_infix("14%5").should eq([14, 5, RPN['%']])
     RPN.from_infix("3 + 4 * 2 / (1 - 5)^2^3").should eq([

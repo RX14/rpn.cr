@@ -1,7 +1,15 @@
 module RPN
   class Lexer
-    def initialize(@string : Slice(UInt8), @infix : Bool)
+    @string : Slice(UInt8)
+
+    def initialize(str : Slice(UInt8), @infix : Bool)
       @accept_number = true
+
+      while str.size > 0 && str[0] == ' '.ord
+        str += 1
+      end
+
+      @string = str
     end
 
     def next
