@@ -13,6 +13,7 @@ Add this to your application's `shard.yml`:
 dependencies:
   rpn:
     github: RX14/rpn.cr
+    version: 0.1.0
 ```
 
 ## Usage
