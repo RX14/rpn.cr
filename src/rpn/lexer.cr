@@ -72,7 +72,7 @@ module RPN
     private def number_start?(str)
       # The number either starts with a number or decimal point
       '0'.ord <= str[0] <= '9'.ord || str[0] == '.'.ord || # or starts with a '+' or '-', with a number or decimal point afterwards
- ((str[0] == '-'.ord || str[0] == '+'.ord) && str.size >= 2 && ('0'.ord <= str[1] <= '9'.ord || str[1] == '.'.ord))
+        ((str[0] == '-'.ord || str[0] == '+'.ord) && str.size >= 2 && ('0'.ord <= str[1] <= '9'.ord || str[1] == '.'.ord))
     end
   end
 end
