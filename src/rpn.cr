@@ -83,7 +83,7 @@ module RPN
     raise "Invalid string: not ascii" unless string.ascii_only?
 
     lexer = Lexer.new(string.to_slice, infix: true)
-    stack = Array(Operator).new(string.bytesize / 2)
+    stack = Array(Operator).new(string.bytesize // 2)
     output = Array(Operator | Float64).new(string.bytesize)
 
     while lexer.has_next?
